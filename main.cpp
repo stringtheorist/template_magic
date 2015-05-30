@@ -38,7 +38,7 @@ int main (int argc, char **argv)
   fillRandomValues(A);
   fillRandomValues(B);
 
-  C = A*B + C;
+  C = A*B + A;
 
   printMatrix(C);
   return 0;
