@@ -17,6 +17,8 @@ void fillRandomValues(Matrix &A)
   }
 }
 
+#if 0
+
 void printMatrix(Matrix &A)
 {
   std::cout << "Matrix [" << A.getRows() << " x " << A.getCols() << "] :" << std::endl;
@@ -27,19 +29,26 @@ void printMatrix(Matrix &A)
     std::cout << std::endl;
   }
 }
+#endif
 
 
 int main (int argc, char **argv)
 {
-  Matrix A(5, 10);
-  Matrix B(10, 4);
-  Matrix C(5, 4);
+//  Matrix A(5, 10);
+ // Matrix B(10, 4);
+  //Matrix C(5, 4);
+  Matrix A(5, 5);
+  Matrix B(5, 5);
+  Matrix C(5, 5);
 
-  fillRandomValues(A);
-  fillRandomValues(B);
+//  fillRandomValues(A);
+ // fillRandomValues(B);
+ A.setIdentity();
+ B.setIdentity();
 
-  C = A*B + A;
+  C = 2.0*A*B + A;
 
-  printMatrix(C);
+  //printMatrix(C);
+  C.printMatrix();
   return 0;
 }

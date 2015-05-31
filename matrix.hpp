@@ -38,6 +38,33 @@ class Matrix
       values[i*cols + j] = val;
     }
 
+    void setIdentity()
+    {
+      assert(rows == cols);
+      for (int i = 0; i < rows; i++) 
+      {
+	for(int j = 0; j < cols; j++) 
+	{
+	  values[i*cols + j] = 0.0;
+	  if (i == j)
+	  {
+	    values[i*cols + j] = 1.0;
+	  }
+	}
+      }
+    }
+
+    void printMatrix()
+    {
+      std::cout << "Matrix [" << rows << " x " << cols << "] :" << std::endl;
+      for (int i = 0; i < rows; i++) {
+	for (int j = 0; j < cols; j++) {
+	  std::cout << values[i*cols + j] << " ";
+	}
+	std::cout << std::endl;
+      }
+    }
+
     double operator () (int i, int j) const
     {
       assert(i < rows);
@@ -58,6 +85,13 @@ class Matrix
 	}
       }
 
+      return *this;
+    }
+
+    template<typename a>
+    Matrix& operator+=(const a& expr)
+    {
+      *this = *this + expr;
       return *this;
     }
 };
@@ -95,6 +129,38 @@ Sum<a, b> operator+ (const a& A, const b& B)
 }
 
 template <typename a, typename b>
+class Difference
+{
+  public:
+    explicit Difference (const a& A, const b& B)
+      : A_(A) , B_(B)
+    {}
+    double operator () (int i, int j) const 
+    {
+      return A_(i, j) - B_(i, j);
+    }
+    int getRows() const
+    {
+      return A_.getRows();
+    }
+    int getCols() const
+    {
+      return A_.getCols();
+    }
+
+  private:
+    const a& A_;
+    const b& B_;
+
+};
+
+template <typename a, typename b>
+Difference<a, b> operator- (const a& A, const b& B) 
+{
+  return Difference<a, b> (A, B);
+}
+
+template <typename a, typename b>
 class Product
 {
   public:
@@ -127,6 +193,55 @@ class Product
     const b& B_;
 };
 
+template <typename b>
+class Product<double, b>
+{
+  public:
+    explicit Product (const double& A, const b& B)
+      : A_(A) , B_(B)
+    {}
+    double operator () (int i, int j) const 
+    {
+      return A_*B_(i, j);
+    }
+    int getRows() const
+    {
+      return B_.getRows();
+    }
+    int getCols() const
+    {
+      return B_.getCols();
+    }
+
+  private:
+    const double& A_;
+    const b& B_;
+};
+
+template <typename a>
+class Product<a, double>
+{
+  public:
+    explicit Product (const a& A, const double& B)
+      : A_(A) , B_(B)
+    {}
+    double operator () (int i, int j) const 
+    {
+      return B_*A_(i, j);
+    }
+    int getRows() const
+    {
+      return A_.getRows();
+    }
+    int getCols() const
+    {
+      return A_.getCols();
+    }
+
+  private:
+    const a& A_;
+    const double& B_;
+};
 
 template <typename a, typename b>
 Product<a, b> operator* (const a& A, const b& B) 
